@@ -64,6 +64,9 @@ function blob_fixup() {
         system_ext/etc/permissions/dpmapi.xml)
             sed -i 's|/system/|/system_ext/|g' "${2}"
             ;;
+        system_ext/lib64/libdpmframework.so)
+            grep -q "libshim_dpmframework.so" "${2}" || "${PATCHELF}" --add-needed "libshim_dpmframework.so" "${2}"
+            ;;
     esac
 }
 

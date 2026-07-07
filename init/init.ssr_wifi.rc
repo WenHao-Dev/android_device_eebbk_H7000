@@ -1,0 +1,29 @@
+# H7000 WiFi/modem SSR fix (device tree)
+on early-boot
+    write /sys/module/subsystem_restart/parameters/disable_restart_work 1
+    write /sys/module/subsystem_restart/parameters/max_restarts 100
+    write /sys/module/subsystem_restart/parameters/max_history_time 3600000
+    write /sys/module/pil_msa/parameters/modem_trigger_panic 0
+    exec_start vendor.ssr_setup
+
+on boot
+    write /sys/module/subsystem_restart/parameters/disable_restart_work 1
+    start vendor.rmt_storage
+    start vendor.qrtr-ns
+    start vendor.tftp_server
+    exec_start vendor.ssr_setup
+
+on property:sys.boot_completed=1
+    write /sys/module/subsystem_restart/parameters/disable_restart_work 1
+    setprop vendor.peripheral.shutdown_critical_list none
+    start vendor.rmt_storage
+    start vendor.qrtr-ns
+    start vendor.tftp_server
+    exec_start vendor.ssr_setup
+    exec_start vendor.wifi_kick
+
+service vendor.wifi_kick /vendor/bin/wifi_kick.sh
+    user root
+    group root system wifi
+    oneshot
+    disabled

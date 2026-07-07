@@ -8,6 +8,9 @@ include vendor/eebbk/H7000/BoardConfigVendor.mk
 
 DEVICE_PATH := device/eebbk/H7000
 
+# ANT+
+BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
+
 # APEX
 DEXPREOPT_GENERATE_APEX_IMAGE := true
 
@@ -35,6 +38,9 @@ AUDIO_FEATURE_ENABLED_EXT_AMPLIFIER := false
 AUDIO_FEATURE_ENABLED_INCALL_MUSIC := true
 AUDIO_FEATURE_ENABLED_NT_PAUSE_TIMEOUT := true
 
+# Bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/bluetooth
+
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := sdm660
 TARGET_NO_BOOTLOADER := true
@@ -56,15 +62,17 @@ BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_CMDLINE := \
 	androidboot.console=0 \
 	androidboot.hardware=qcom \
-    user_debug=31 \
-	msm_rtb.filter=0x37 \
 	ehci-hcd.park=3 \
+	loop.max_part=7 \
 	lpm_levels.sleep_disabled=1 \
+	msm_rtb.filter=0x37 \
+	printk.devkmsg=on \
 	sched_enable_hmp=1 \
 	sched_enable_power_aware=1 \
 	service_locator.enable=1 \
 	swiotlb=1 \
-	loop.max_part=7
+	user_debug=31
+BOARD_KERNEL_CMDLINE += androidboot.init_fatal_reboot_target=recovery
 # TODO: Set SELinux to Permissive mode
 BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
@@ -76,7 +84,7 @@ TARGET_KERNEL_CONFIG := vendor/sdm660-perf_defconfig
 TARGET_FORCE_PREBUILT_KERNEL := true
 ifeq ($(TARGET_FORCE_PREBUILT_KERNEL),true)
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilts/Image.gz-dtb
-PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(DEVICE_PATH)/prebuilts/vendor/,$(TARGET_OUT_VENDOR)/lib/modules)
+PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(DEVICE_PATH)/prebuilts/modules/,$(TARGET_COPY_OUT_VENDOR)/lib/modules)
 endif
 
 # Partitions

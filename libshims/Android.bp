@@ -1,0 +1,12 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_library_shared {
+    name: "libshim_dpmframework",
+    srcs: [ 
+        "strdup16to8.cpp",
+        "strdup8to16.cpp",
+    ],
+}
